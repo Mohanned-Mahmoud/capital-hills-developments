@@ -12,13 +12,25 @@ export const CONTACT = {
   sms: 'sms:+201005550190',
 };
 
-export function Logo({ light = false }: { light?: boolean }) {
+export function Logo({ light = false, iconOnly = false, responsive = false }: { light?: boolean; iconOnly?: boolean; responsive?: boolean }) {
+  const base = light ? "/logo-2" : "/logo-1";
+  
+  if (responsive) {
+    return (
+      <Link href="/" className="focus-ring block" data-testid="link-logo">
+        <img src={`${base}-icon.png`} alt="Capital Hills Developments" className="h-10 w-10 object-contain transition-all md:hidden" />
+        <img src={`${base}-full.png`} alt="Capital Hills Developments" className="hidden md:block h-8 w-auto object-contain transition-all" />
+      </Link>
+    );
+  }
+
+  const src = iconOnly ? `${base}-icon.png` : `${base}-full.png`;
   return (
     <Link href="/" className="focus-ring block" data-testid="link-logo">
       <img 
-        src="/capital-hills-logo.png" 
+        src={src} 
         alt="Capital Hills Developments" 
-        className={`h-11 w-auto object-contain transition-all ${light ? 'brightness-0 invert' : ''}`}
+        className={iconOnly ? "h-10 w-10 object-contain transition-all" : "h-8 w-auto object-contain transition-all"}
       />
     </Link>
   );
@@ -32,7 +44,7 @@ export function Header() {
   return (
     <header className="absolute inset-x-0 top-0 z-30">
       <div className="container-shell flex h-[76px] items-center justify-between">
-        <Logo light={darkHeader} />
+        <Logo light={darkHeader} responsive={true} />
         <nav className="hidden items-center gap-8 md:flex">
           {nav.map(([label, href]) => (
             <Link 
@@ -167,7 +179,7 @@ export function ChatWidget() {
   const prompts = ['What can I buy under EGP 3m?', 'Can I inspect this weekend?', 'Send me the New Cairo brochure'];
   return <div className="fixed bottom-[82px] right-4 z-40 md:bottom-20 md:right-6">
     {open && <div className="mb-3 w-[min(340px,calc(100vw-32px))] overflow-hidden rounded-2xl border border-[#e1cda9] bg-[#fffaf1] shadow-[0_18px_50px_rgba(60,29,42,.18)]">
-      <div className="bg-[#4a1e2c] p-4 text-[#fbf3e6]"><div className="flex items-center justify-between"><div className="flex items-center gap-2"><CircleUserRound size={22} className="text-[#d9ad51]" /><div><strong className="block text-sm">Capital Hills desk</strong><span className="text-[11px] text-[#dfc9be]">Usually replies in 5 minutes</span></div></div><button onClick={() => setOpen(false)} className="text-[#dfc9be]" aria-label="Close chat" data-testid="button-close-chat"><X size={17} /></button></div></div>
+      <div className="bg-[#4a1e2c] p-4 text-[#fbf3e6]"><div className="flex items-center justify-between"><div className="flex items-center gap-2"><img src="/logo-2-icon.png" alt="" className="h-6 w-6 object-contain" /><div><strong className="block text-sm">Capital Hills desk</strong><span className="text-[11px] text-[#dfc9be]">Usually replies in 5 minutes</span></div></div><button onClick={() => setOpen(false)} className="text-[#dfc9be]" aria-label="Close chat" data-testid="button-close-chat"><X size={17} /></button></div></div>
        <div className="space-y-3 p-4"><div className="rounded-xl rounded-tl-sm bg-[#f0e4d2] p-3 text-xs leading-5 text-[#4a1e2c]">Hello. I can help you find a project, understand a payment plan, or arrange a visit.</div>{sent && <div className="ml-6 rounded-xl rounded-tr-sm bg-[#4a1e2c] p-3 text-xs leading-5 text-[#fff7e9]">{sent}</div>}<div className="space-y-2">{prompts.map((prompt) => <button key={prompt} onClick={() => setSent(`“${prompt}” — thanks. A representative will follow up shortly.`)} className="block w-full rounded-lg border border-[#decbaa] px-3 py-2 text-left text-xs font-semibold text-[#4a1e2c] transition hover:border-[#9b702c] hover:bg-[#f8eddd]" data-testid={`chat-prompt-${prompt.slice(0, 4).replace(' ', '-')}`}>{prompt}</button>)}</div><Link href="/contact" className="block pt-1 text-center text-xs font-bold text-[#9b702c]" data-testid="link-chat-contact">Prefer to talk to someone? →</Link></div>
     </div>}
     <button onClick={() => setOpen(!open)} className="focus-ring flex items-center gap-2 rounded-full bg-[#c49743] px-4 py-3 text-xs font-bold text-[#3c1d2a] shadow-lg transition hover:bg-[#d9ad51]" data-testid="button-open-chat"><MessageCircle size={17} /> {open ? 'Close desk' : 'Chat with us'}</button>
